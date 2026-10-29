@@ -52,7 +52,7 @@ def app_rules():
 
 def restart_forge():
     """Disable and enable Forge in the sandbox shell (asynchronous in GNOME 50)."""
-    uuid = "forge@jmmaranan.com"
+    uuid = "zforge@luisgneiting.github.io"
     for call, want in (("disableExtension", (2, 3)), ("enableExtension", (1, 3))):
         h.js(f'(() => {{ Main.extensionManager.{call}("{uuid}"); return "ok"; }})()')
         for _ in range(60):

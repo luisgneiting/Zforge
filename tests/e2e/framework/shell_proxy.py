@@ -37,7 +37,7 @@ class ShellProxy:
     SHELL_OBJECT_PATH = "/org/gnome/Shell"
     SHELL_INTERFACE = "org.gnome.Shell"
 
-    FORGE_UUID = "forge@jmmaranan.com"
+    FORGE_UUID = "zforge@luisgneiting.github.io"
 
     # Injected test bridge (forge-1gu). The JS lives in bridge.js next to this file and is
     # sent once per connection; see _ensure_bridge().
@@ -395,7 +395,7 @@ class ShellProxy:
             return -1
 
     def get_config_dir(self) -> str:
-        """Return Forge's user config dir (configMgr.confDir), e.g. ~/.config/forge.
+        """Return Forge's user config dir (configMgr.confDir), e.g. ~/.config/zforge.
 
         Read from the live extension so it matches whatever XDG_CONFIG_HOME the
         gnome-shell process uses, rather than guessing the path test-side.

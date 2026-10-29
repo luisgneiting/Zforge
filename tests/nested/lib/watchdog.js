@@ -39,7 +39,7 @@
   };
   const label = (w) => `${w.get_id() % 1000}:${(w.get_wm_class() ?? "?").split(".").pop()}`;
   const sample = () => {
-    const wm = Main.extensionManager.lookup("forge@jmmaranan.com")?.stateObj?.extWm;
+    const wm = Main.extensionManager.lookup("zforge@luisgneiting.github.io")?.stateObj?.extWm;
     if (!wm?.tree) return;
     st.samples++;
     const ws = global.workspace_manager.get_active_workspace();

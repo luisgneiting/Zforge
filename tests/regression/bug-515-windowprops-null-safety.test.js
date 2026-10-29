@@ -90,7 +90,7 @@ describe("Bug #515: windowProps is always overrides-safe", () => {
  * Bug forge-3sv2: windowProps setter loses the first override on a fresh install.
  *
  * On a fresh profile the windowConfigFile getter delegates to loadFile(), which
- * creates ~/.config/forge/config/windows.json but returns null. The old setter
+ * creates ~/.config/zforge/config/windows.json but returns null. The old setter
  * then fell back to defaultWindowConfigFile — the read-only bundled install file —
  * so _saveJsonConfig's replace_contents threw, was swallowed, and the user's first
  * override was silently lost. The setter must always write to the user config path
@@ -130,7 +130,7 @@ describe("forge-3sv2: windowProps setter persists the first override on a fresh 
 
     // The override must land on the writable user path, never the read-only default.
     expect(savedFile).not.toBeNull();
-    expect(savedFile.get_path()).toBe("/home/test/.config/forge/config/windows.json");
+    expect(savedFile.get_path()).toBe("/home/test/.config/zforge/config/windows.json");
     expect(savedFile.get_path()).not.toBe(readOnlyDefault.get_path());
     expect(savedFile._writable).toBe(true);
   });

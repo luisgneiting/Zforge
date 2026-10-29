@@ -4,7 +4,7 @@
 //   globalThis.__perf.stop()    remove them, return the report
 (() => {
   if (globalThis.__perf?.installed) globalThis.__perf.stop();
-  const wm = Main.extensionManager.lookup("forge@jmmaranan.com").stateObj.extWm;
+  const wm = Main.extensionManager.lookup("zforge@luisgneiting.github.io").stateObj.extWm;
   const Meta = imports.gi.Meta;
   const now = () => GLib.get_monotonic_time();
   const st = {

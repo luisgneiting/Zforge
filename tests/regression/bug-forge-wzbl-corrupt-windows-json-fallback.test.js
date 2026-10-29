@@ -4,7 +4,7 @@ import { ConfigManager } from "../../lib/shared/settings.js";
 /**
  * forge-wzbl: windowProps read `this.windowConfigFile || this.defaultWindowConfigFile`,
  * which short-circuits on the user file merely EXISTING. A truncated or hand-edited
- * ~/.config/forge/config/windows.json therefore parsed to null and yielded
+ * ~/.config/zforge/config/windows.json therefore parsed to null and yielded
  * {overrides: []} — it never fell back to the bundled default, despite the comment
  * claiming it did.
  *
@@ -26,7 +26,7 @@ const USER = { overrides: [{ wmClass: "Firefox", mode: "float" }] };
 function createConfigManager({ userFileExists, userContents }) {
   const configMgr = new ConfigManager({ dir: { get_path: () => "/ext" } });
 
-  const userFile = { get_path: () => "/home/u/.config/forge/config/windows.json" };
+  const userFile = { get_path: () => "/home/u/.config/zforge/config/windows.json" };
   const defaultFile = { get_path: () => "/ext/config/windows.json" };
 
   // Bypass the filesystem: model only the two things that matter here — whether

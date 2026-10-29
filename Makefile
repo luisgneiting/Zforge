@@ -1,4 +1,4 @@
-UUID = forge@jmmaranan.com
+UUID = zforge@luisgneiting.github.io
 INSTALL_PATH = $(HOME)/.local/share/gnome-shell/extensions/$(UUID)
 MSGSRC = $(wildcard po/*.po)
 
@@ -86,7 +86,7 @@ build: clean metadata.json schemas compilemsgs metadata
 			msgf=temp/locale/`basename $$msg .mo`; \
 			mkdir -p $$msgf; \
 			mkdir -p $$msgf/LC_MESSAGES; \
-			cp $$msg $$msgf/LC_MESSAGES/forge.mo; \
+			cp $$msg $$msgf/LC_MESSAGES/zforge.mo; \
 		fi; \
 	done;
 
@@ -117,7 +117,7 @@ update-pot:
 	xgettext --from-code=UTF-8 --add-location=file --sort-by-file \
 	  --package-name "Forge" --output=po/forge.pot \
 	  $$(find lib -name '*.js' | sort) ./prefs.js ./extension.js \
-	  schemas/org.gnome.shell.extensions.forge.gschema.xml
+	  schemas/org.gnome.shell.extensions.zforge.gschema.xml
 	sed -i '/^"POT-Creation-Date:/d' po/forge.pot
 else
 update-pot:
@@ -188,7 +188,7 @@ uninstall:
 	rm -rf $(INSTALL_PATH)
 
 purge:
-	rm -rf .config/forge
+	rm -rf .config/zforge
 
 # When releasing
 dist: build

@@ -28,8 +28,8 @@ class ForgeSettings:
     to test different configurations.
     """
 
-    SCHEMA_ID = "org.gnome.shell.extensions.forge"
-    KEYBINDINGS_SCHEMA_ID = "org.gnome.shell.extensions.forge.keybindings"
+    SCHEMA_ID = "org.gnome.shell.extensions.zforge"
+    KEYBINDINGS_SCHEMA_ID = "org.gnome.shell.extensions.zforge.keybindings"
 
     def __init__(self, schema_dir: Optional[str] = None):
         """

@@ -24,7 +24,7 @@ group has a **Reset** to restore the gschema default.
 Forge loads a user stylesheet from:
 
 ```
-~/.config/forge/stylesheet/forge/stylesheet.css
+~/.config/zforge/stylesheet/forge/stylesheet.css
 ```
 
 It's seeded from the bundled default on first run (and re-synced by `patchCss` on

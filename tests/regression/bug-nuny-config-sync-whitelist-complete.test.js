@@ -32,13 +32,15 @@ const INTERNAL_MAIN_KEYS = [
   // Consent to keep a diagnostic log is given on each computer, never synced
   "diagnostic-log-enabled",
   "diagnostic-log-asked",
+  // Set once Forge's settings were taken over on this computer
+  "legacy-forge-imported",
 ];
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const GSCHEMA_PATH = join(REPO_ROOT, "schemas", "org.gnome.shell.extensions.forge.gschema.xml");
+const GSCHEMA_PATH = join(REPO_ROOT, "schemas", "org.gnome.shell.extensions.zforge.gschema.xml");
 
-const MAIN_SCHEMA_ID = "org.gnome.shell.extensions.forge";
-const KBD_SCHEMA_ID = "org.gnome.shell.extensions.forge.keybindings";
+const MAIN_SCHEMA_ID = "org.gnome.shell.extensions.zforge";
+const KBD_SCHEMA_ID = "org.gnome.shell.extensions.zforge.keybindings";
 
 /**
  * Split the gschema XML into per-schema bodies keyed by schema id.

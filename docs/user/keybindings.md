@@ -66,9 +66,9 @@ Three equivalent ways to change a binding:
 
 - **Preferences → Keyboard** — click a shortcut row, press the new chord (Enter to
   apply, clear the field to unbind). The easiest path.
-- **GSettings** — schema `org.gnome.shell.extensions.forge.keybindings`, each key an
+- **GSettings** — schema `org.gnome.shell.extensions.zforge.keybindings`, each key an
   array of accelerator strings (e.g. `['<Super>h', '<Super>Left']`).
-- **Portable file** — `~/.config/forge/config/keybindings.json` (see
+- **Portable file** — `~/.config/zforge/config/keybindings.json` (see
   [config.md](config.md)); reload with `Super+Shift+r`.
 
 If you assign a chord that's already taken by another Forge action, Preferences →

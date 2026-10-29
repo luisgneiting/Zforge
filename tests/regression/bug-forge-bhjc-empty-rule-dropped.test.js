@@ -7,7 +7,7 @@ import { parse, stringify } from "../../lib/css/index.js";
  * round-trip — with ZERO parse errors, which means the forge-y3jy
  * refuse-to-write guard never fires for it. A user who comments out a rule's
  * declarations lost the whole selector the next time a prefs color change
- * rewrote ~/.config/forge/stylesheet/forge/stylesheet.css.
+ * rewrote ~/.config/zforge/stylesheet/forge/stylesheet.css.
  *
  * A missing .window-*-border rule is also exactly the input that made
  * Gdk.RGBA.parse(undefined) throw four pages out of the prefs window

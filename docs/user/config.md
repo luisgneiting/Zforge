@@ -6,7 +6,7 @@ them up, version-control them, or copy them to another machine.
 ## Where config lives
 
 ```
-~/.config/forge/config/
+~/.config/zforge/config/
 ├── settings.json       # mirror of Forge GSettings (appearance, behavior, …)
 ├── keybindings.json    # mirror of keybindings
 └── windows.json        # float/tile window rules (see rules.md)
@@ -30,7 +30,7 @@ applies it. `windows.json` is reloaded live with **`Super+Shift+r`**.
 ## Moving config between machines
 
 1. On the source machine: **Export current settings**.
-2. Copy `~/.config/forge/config/*.json` to the same path on the target.
+2. Copy `~/.config/zforge/config/*.json` to the same path on the target.
 3. On the target: **Import** (or just restart GNOME Shell — sync imports on enable).
 
 Because the files are plain JSON, they diff cleanly and are safe to keep in a

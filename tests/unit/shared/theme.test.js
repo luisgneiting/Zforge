@@ -362,7 +362,7 @@ describe("ThemeManagerBase", () => {
       expect(mockConfigMgr.stylesheetFile.copy).toHaveBeenCalled();
     });
 
-    // forge-0h9k: stylesheetFile is null when ~/.config/forge is unwritable and
+    // forge-0h9k: stylesheetFile is null when ~/.config/zforge is unwritable and
     // seeding fails. patchCss() must no-op (not deref null.get_path()) so enable()
     // proceeds; css-last-update stays unwritten so it retries on a future launch.
     it("is a no-op when stylesheetFile is null (unwritable config dir)", () => {

@@ -104,9 +104,9 @@ crashes later.
 
 Two layers, reconciled by `ConfigManager` + `ConfigSync`:
 
-- **GSettings** — schema `org.gnome.shell.extensions.forge` (+ `.keybindings`).
+- **GSettings** — schema `org.gnome.shell.extensions.zforge` (+ `.keybindings`).
   The runtime source of truth.
-- **JSON files** under `~/.config/forge/config/`:
+- **JSON files** under `~/.config/zforge/config/`:
   - `windows.json` — per-window / per-class float & tile overrides
     (`ConfigManager`, `lib/shared/settings.js`).
   - `settings.json` / `keybindings.json` — portable mirror of GSettings, written

@@ -14,7 +14,7 @@ vi.mock("../../lib/extension/indicator.js", () => ({
 }));
 
 // The realistic throw site: config import writes GSettings and can fail on a
-// corrupt/unreadable ~/.config/forge.
+// corrupt/unreadable ~/.config/zforge.
 vi.mock("../../lib/shared/config-sync.js", () => ({
   ConfigSync: class ConfigSync {
     init() {
@@ -80,7 +80,7 @@ describe("forge-tus6: a failed enable() must not leave GNOME settings clobbered"
 
   function buildExtension() {
     const ext = new ForgeExtension();
-    const forgeSettings = new MockSettings("org.gnome.shell.extensions.forge");
+    const forgeSettings = new MockSettings("org.gnome.shell.extensions.zforge");
     // Ungate every gated override so all of them actually apply.
     forgeSettings.set_boolean("disable-edge-tiling", true);
     forgeSettings.set_boolean("tiling-mode-enabled", true);

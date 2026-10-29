@@ -111,5 +111,5 @@ CSS parser in `lib/css/` and exposes `getCssProperty`/`setCssProperty`.
 `updateDecorationLayout()` / `updateBorderLayout()` apply style classes
 (`.window-tiled-border`, `.window-tabbed-tab`, palette classes …) to the actors.
 Users override appearance at
-`~/.config/forge/stylesheet/forge/stylesheet.css`; `patchCss()` syncs bundled
+`~/.config/zforge/stylesheet/forge/stylesheet.css`; `patchCss()` syncs bundled
 defaults into the user profile, and a GSettings trigger reloads the stylesheet.

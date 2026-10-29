@@ -8,7 +8,7 @@ import { ExtensionThemeManager } from "../../lib/extension/extension-theme-manag
  * defaultStylesheetFile and then passed configMgr.stylesheetFile straight to
  * unload_stylesheet() with no null guard. ConfigManager.loadFile() returns null
  * when the profile file is absent and seeding throws — read-only $HOME, a
- * root-owned ~/.config/forge, a full disk — the state theme.js already documents
+ * root-owned ~/.config/zforge, a full disk — the state theme.js already documents
  * for forge-0h9k.
  *
  * st_theme_unload_stylesheet(StTheme*, GFile *file) carries no (nullable)
@@ -67,7 +67,7 @@ describe("Bug forge-jvgj: a null user stylesheet must not strip all Forge stylin
 
   function makeManager(stylesheetFile) {
     return new ExtensionThemeManager({
-      metadata: { uuid: "forge@jmmaranan.com" },
+      metadata: { uuid: "zforge@luisgneiting.github.io" },
       configMgr: { stylesheetFile, defaultStylesheetFile },
       settings: {},
     });

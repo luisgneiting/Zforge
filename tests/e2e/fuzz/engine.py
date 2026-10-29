@@ -60,7 +60,7 @@ LOG_ERROR_MARKERS = (
 
 # A GJS stack frame referencing the Forge extension. A *-CRITICAL whose trailing stack has no
 # such frame is GNOME-shell-core noise (not a Forge bug) — see LogScanner.new_errors.
-FORGE_FRAME_MARKER = "forge@jmmaranan"
+FORGE_FRAME_MARKER = "zforge@luisgneiting"
 
 
 class LogScanner:

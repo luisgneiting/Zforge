@@ -1,6 +1,6 @@
 // Print Forge's tree for the sandbox monitor: containers with layout/percent, windows with frames.
 (() => {
-  const wm = Main.extensionManager.lookup("forge@jmmaranan.com").stateObj.extWm;
+  const wm = Main.extensionManager.lookup("zforge@luisgneiting.github.io").stateObj.extWm;
   const out = [];
   const r = (x) => (x ? `[${[x.x, x.y, x.width, x.height].map(Math.round).join(",")}]` : "-");
   const walk = (n, d) => {

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/forge-ext/forge/config/settings.schema.json",
+  "$id": "https://github.com/luisgneiting/Zforge/config/settings.schema.json",
   "title": "Forge Settings",
   "description": "Portable settings configuration for the Forge GNOME Shell extension",
   "type": "object",

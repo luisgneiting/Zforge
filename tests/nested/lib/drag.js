@@ -9,7 +9,7 @@
     DY = __DY__,
     STEPS = __STEPS__,
     STEP_MS = __STEP_MS__;
-  const wm = Main.extensionManager.lookup("forge@jmmaranan.com").stateObj.extWm;
+  const wm = Main.extensionManager.lookup("zforge@luisgneiting.github.io").stateObj.extWm;
   const seat = global.stage.context.get_backend().get_default_seat();
   const dev = seat.create_virtual_device(0 /* CLUTTER_POINTER_DEVICE */);
   const now = () => GLib.get_monotonic_time();

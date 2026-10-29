@@ -23,7 +23,7 @@ import time
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "lib"))
 import harness as h  # noqa: E402
 
-UUID = "forge@jmmaranan.com"
+UUID = "zforge@luisgneiting.github.io"
 
 
 def set_state(call, want):

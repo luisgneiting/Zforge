@@ -30,7 +30,7 @@ import { PortabilityPage } from "./lib/prefs/portability.js";
 export default class ForgeExtensionPreferences extends ExtensionPreferences {
   settings = this.getSettings();
 
-  kbdSettings = this.getSettings("org.gnome.shell.extensions.forge.keybindings");
+  kbdSettings = this.getSettings("org.gnome.shell.extensions.zforge.keybindings");
 
   /** @param {ConstructorParameters<typeof ExtensionPreferences>} args */
   constructor(...args) {

@@ -29,7 +29,7 @@ _STACKED_DECORATION_PROBE = r"""
   // orientation: St.BoxLayout.vertical was removed on GNOME 50, so derive the
   // vertical flag from orientation === Clutter.Orientation.VERTICAL instead.
   const Clutter = imports.gi.Clutter;
-  const ext = Main.extensionManager.lookup('forge@jmmaranan.com').stateObj;
+  const ext = Main.extensionManager.lookup('zforge@luisgneiting.github.io').stateObj;
   const wm = ext && ext.extWm;
   if (!wm) return JSON.stringify({err: 'no-wm'});
   let con = null;

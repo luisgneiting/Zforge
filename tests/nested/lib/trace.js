@@ -1,7 +1,7 @@
 // Debug aid: wrap Forge WindowManager methods to log each call with the focused window's frame
 // and baseline (initRect). Install:  trace.js with __ON__=true ; remove with __ON__=false.
 (() => {
-  const wm = Main.extensionManager.lookup("forge@jmmaranan.com").stateObj.extWm;
+  const wm = Main.extensionManager.lookup("zforge@luisgneiting.github.io").stateObj.extWm;
   const names = [
     "_handleGrabOpBegin",
     "_handleResizing",

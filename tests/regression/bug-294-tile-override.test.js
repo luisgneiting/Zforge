@@ -7,7 +7,7 @@ import { createMockWindow, createWindowManagerFixture } from "../mocks/helpers/i
  * Problem: Certain applications (Neovide, Black Box terminal) always launch
  * in floating mode and cannot be toggled to tiled mode. Even editing
  * windows.json does not help because Forge was reading from the wrong config
- * path (.local/share/gnome-shell/extensions/ instead of .config/forge/config/).
+ * path (.local/share/gnome-shell/extensions/ instead of .config/zforge/config/).
  *
  * Root Cause: The issue has multiple aspects:
  * 1. Config file loading path was incorrect

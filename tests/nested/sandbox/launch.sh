@@ -43,7 +43,9 @@ if [[ $PROFILE == real ]]; then
   fi
   HOST_ENABLED=$(gsettings get org.gnome.shell enabled-extensions)
   HOST_DISABLED=$(gsettings get org.gnome.shell disabled-extensions)
-  HOST_FORGE=$(dconf dump /org/gnome/shell/extensions/forge/)
+  HOST_FORGE=$(dconf dump /org/gnome/shell/extensions/zforge/)
+  # Before the first Zforge login the settings are still under Forge's path
+  [[ -n $HOST_FORGE ]] || HOST_FORGE=$(dconf dump /org/gnome/shell/extensions/forge/)
 elif [[ $PROFILE != plain ]]; then
   echo "SANDBOX_PROFILE must be plain or real"; exit 1
 fi
@@ -87,14 +89,14 @@ if [[ $PROFILE == real ]]; then
   python3 - "$HOST_ENABLED" "$HOST_DISABLED" "$HOST_FORGE" "$SANDBOX_DIR/data/gnome-shell/extensions/$FORGE_UUID/schemas" <<'PY'
 import ast, configparser, subprocess, sys
 enabled, disabled, forge, schemadir = sys.argv[1:]
-enabled = [e for e in ast.literal_eval(enabled.replace("@as ", "")) if e != "forge@jmmaranan.com"]
-enabled += ["forge@jmmaranan.com", "sandbox-unsafe@local"]
+enabled = [e for e in ast.literal_eval(enabled.replace("@as ", "")) if e != "zforge@luisgneiting.github.io"]
+enabled += ["zforge@luisgneiting.github.io", "sandbox-unsafe@local"]
 subprocess.run(["gsettings", "set", "org.gnome.shell", "enabled-extensions", str(enabled)], check=True)
 subprocess.run(["gsettings", "set", "org.gnome.shell", "disabled-extensions", disabled], check=True)
 cfg = configparser.ConfigParser(interpolation=None, strict=False)
 cfg.optionxform = str
 cfg.read_string(forge)
-schemas = {"/": "org.gnome.shell.extensions.forge", "keybindings": "org.gnome.shell.extensions.forge.keybindings"}
+schemas = {"/": "org.gnome.shell.extensions.zforge", "keybindings": "org.gnome.shell.extensions.zforge.keybindings"}
 for group in cfg.sections():
     if group not in schemas:
         continue
@@ -113,14 +115,14 @@ gsettings set org.gnome.mutter dynamic-workspaces false        # forge: no dynam
 if [[ $PROFILE == plain ]]; then
   # The scenarios build their layouts with auto-split (a third window splits the focused one)
   gsettings --schemadir "$SANDBOX_DIR/data/gnome-shell/extensions/$FORGE_UUID/schemas" \
-    set org.gnome.shell.extensions.forge auto-split-enabled true
+    set org.gnome.shell.extensions.zforge auto-split-enabled true
 fi
 # The diagnostic log runs in every test (its errors would show up as JS errors), and its
 # first-run question, which would take the focus, is already answered
 gsettings --schemadir "$SANDBOX_DIR/data/gnome-shell/extensions/$FORGE_UUID/schemas" \
-  set org.gnome.shell.extensions.forge diagnostic-log-asked true 2>/dev/null || true
+  set org.gnome.shell.extensions.zforge diagnostic-log-asked true 2>/dev/null || true
 gsettings --schemadir "$SANDBOX_DIR/data/gnome-shell/extensions/$FORGE_UUID/schemas" \
-  set org.gnome.shell.extensions.forge diagnostic-log-enabled true 2>/dev/null || true
+  set org.gnome.shell.extensions.zforge diagnostic-log-enabled true 2>/dev/null || true
 gsettings set org.gnome.desktop.wm.preferences num-workspaces 4
 gsettings set org.gnome.shell welcome-dialog-last-shown-version '999'
 # The helper extension (and Forge) load on any GNOME Shell version

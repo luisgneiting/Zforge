@@ -25,6 +25,7 @@ import Gio from "gi://Gio";
 import { Logger } from "./lib/shared/logger.js";
 import { ConfigManager } from "./lib/shared/settings.js";
 import { ConfigSync } from "./lib/shared/config-sync.js";
+import { importLegacyForge } from "./lib/shared/legacy-forge.js";
 import {
   SETTINGS_OVERRIDES,
   shouldApplyOverride,
@@ -47,9 +48,17 @@ import { DiagnosticsPrompt } from "./lib/extension/diagnostics-prompt.js";
 export default class ForgeExtension extends Extension {
   enable() {
     this.settings = this.getSettings();
-    this.kbdSettings = this.getSettings("org.gnome.shell.extensions.forge.keybindings");
+    this.kbdSettings = this.getSettings("org.gnome.shell.extensions.zforge.keybindings");
     Logger.init(this.settings);
     Logger.info("enable");
+
+    // First run: take over the user's Forge settings, before anything reads them
+    this.configMgr = new ConfigManager(this);
+    importLegacyForge({
+      settings: this.settings,
+      kbdSettings: this.kbdSettings,
+      confDir: this.configMgr.confDir,
+    });
 
     // Disable GNOME features and keybindings that conflict with Forge (#461, #288)
     this._savedSettings = [];
@@ -91,8 +100,6 @@ export default class ForgeExtension extends Extension {
       this._overrideReconcileIds = ["tiling-mode-enabled", "disable-edge-tiling"].map((key) =>
         settings.connect(`changed::${key}`, () => this._reconcileOverridesFor(key))
       );
-
-      this.configMgr = new ConfigManager(this);
 
       // Initialize config sync - imports from files if they exist
       this.configSync = new ConfigSync({

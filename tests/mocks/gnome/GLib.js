@@ -22,6 +22,10 @@ export function get_user_config_dir() {
   return "/home/test/.config";
 }
 
+export function get_system_data_dirs() {
+  return ["/usr/local/share", "/usr/share"];
+}
+
 export function get_user_state_dir() {
   return "/home/test/.local/state";
 }
@@ -97,6 +101,7 @@ export default {
   get_home_dir,
   get_user_data_dir,
   get_user_config_dir,
+  get_system_data_dirs,
   get_user_state_dir,
   file_set_contents,
   build_filenamev,

@@ -7,12 +7,12 @@
 - **Restart GNOME Shell** — on X11, `Alt+F2` → `r` → Enter. On Wayland, log out and
   back in.
 - **Check it's enabled** — `gnome-extensions list --enabled` should include
-  `forge@jmmaranan.com`.
+  `zforge@luisgneiting.github.io`.
 
 ## A window won't tile (or won't float)
 
 It probably matches a rule. Check **Preferences → Windows** and
-`~/.config/forge/config/windows.json` for an override on its class, and confirm
+`~/.config/zforge/config/windows.json` for an override on its class, and confirm
 `tiling-mode-enabled` is on and the workspace/monitor isn't excluded
 (`workspace-skip-tile` / `monitor-skip-tile`). See [rules.md](rules.md) and
 [monitors.md](monitors.md).
@@ -28,8 +28,8 @@ are enabled in **Preferences → Tiling → Behavior**. See [layouts.md](layouts
 Logging is **off by default** and only active in development builds. Turn it on:
 
 ```bash
-gsettings set org.gnome.shell.extensions.forge logging-enabled true
-gsettings set org.gnome.shell.extensions.forge log-level 5   # 0=OFF … 5=DEBUG 6=TRACE 7=ALL
+gsettings set org.gnome.shell.extensions.zforge logging-enabled true
+gsettings set org.gnome.shell.extensions.zforge log-level 5   # 0=OFF … 5=DEBUG 6=TRACE 7=ALL
 ```
 
 Then watch the logs:

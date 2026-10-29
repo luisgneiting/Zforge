@@ -1,10 +1,10 @@
 {
-  "name": "Forge",
-  "description": "Tiling and window manager for GNOME\n- Please report bugs/issues on https://github.com/forge-ext/forge/issues\n- Needs a new maintainer.",
-  "gettext-domain": "forge",
-  "uuid": "forge@jmmaranan.com",
-  "settings-schema": "org.gnome.shell.extensions.forge",
-  "shell-version": ["45", "46", "47", "48", "49", "50", "51"],
+  "name": "Zforge",
+  "description": "Tiling and window manager for GNOME, a maintained fork of Forge.\n- Tiles windows automatically, with keyboard shortcuts and drag and drop.\n- Imports your Forge settings the first time it runs.\n- Please report bugs on https://github.com/luisgneiting/Zforge/issues",
+  "gettext-domain": "zforge",
+  "uuid": "zforge@luisgneiting.github.io",
+  "settings-schema": "org.gnome.shell.extensions.zforge",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
   "session-modes": ["user", "unlock-dialog"],
-  "url": "https://github.com/forge-ext/forge"
+  "url": "https://github.com/luisgneiting/Zforge"
 }

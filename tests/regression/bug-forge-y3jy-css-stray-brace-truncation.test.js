@@ -8,7 +8,7 @@ import { File, Settings } from "../mocks/gnome/Gio.js";
  * and stylesheet() never checked that the input was consumed, so a stray brace
  * truncated the AST with an EMPTY parsingErrors list. stringify() then succeeded
  * on the truncation and _updateCss() wrote it back over the user's
- * ~/.config/forge/stylesheet/forge/stylesheet.css — silently deleting every rule
+ * ~/.config/zforge/stylesheet/forge/stylesheet.css — silently deleting every rule
  * after the stray brace. patchCss() is the only .bak writer and only on a cssTag
  * bump, so there is no per-write backup to recover from.
  *

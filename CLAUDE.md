@@ -42,9 +42,9 @@ See **[docs/dev/](docs/dev/)** for the detailed reference: [architecture.md](doc
 
 ## Configuration Files
 
-- GSettings schemas: `org.gnome.shell.extensions.forge` and `org.gnome.shell.extensions.forge.keybindings`
-- Window overrides: `~/.config/forge/config/windows.json`
-- Stylesheet overrides: `~/.config/forge/stylesheet/forge/stylesheet.css`
+- GSettings schemas: `org.gnome.shell.extensions.zforge` and `org.gnome.shell.extensions.zforge.keybindings`
+- Window overrides: `~/.config/zforge/config/windows.json`
+- Stylesheet overrides: `~/.config/zforge/stylesheet/forge/stylesheet.css`
 
 ## Code Style
 

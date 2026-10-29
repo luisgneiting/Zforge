@@ -28,7 +28,7 @@ REAL_SESSION = os.environ.get("FORGE_TEST_REAL_SESSION") == "1"
 
 TOL = 10      # px allowed between an edge's position at release and where it settles
 GAP_TOL = 4   # px allowed between the space between two windows and Forge's gap
-WM = 'Main.extensionManager.lookup("forge@jmmaranan.com").stateObj.extWm'
+WM = 'Main.extensionManager.lookup("zforge@luisgneiting.github.io").stateObj.extWm'
 # Forge's tree node for monitor 0 on the active workspace. Everything the harness inspects or
 # changes is limited to it, so windows on other workspaces are never counted or touched.
 HERE = WM + '.tree.findNode(`mo0ws${global.workspace_manager.get_active_workspace_index()}`)'

@@ -189,7 +189,7 @@ Screenshots for issues and PRs (`lib/shots.py`):
 ## Debugging
 
 - `sandbox/sb_eval.py 'JS expression'` runs JavaScript in the sandbox shell. Forge's window manager
-  is at `Main.extensionManager.lookup("forge@jmmaranan.com").stateObj.extWm`.
+  is at `Main.extensionManager.lookup("zforge@luisgneiting.github.io").stateObj.extWm`.
 - `sandbox/sb_eval.py - < lib/tree.js` prints Forge's tree with rects and percents.
 - `lib/trace.js` logs every call of Forge's resize functions with the frame and the baseline;
   `lib/perf.js` times Forge's hot functions and counts window move requests.

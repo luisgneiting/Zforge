@@ -13,7 +13,7 @@ if [[ -z ${FORGE_SRC:-} ]]; then
 fi
 # Where the throwaway sandbox state lives (extensions dir, keyfile settings, logs, bus address).
 SANDBOX_DIR="${SANDBOX_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/forge-sandbox/sandbox}"
-FORGE_UUID=forge@jmmaranan.com
+FORGE_UUID=zforge@luisgneiting.github.io
 SANDBOX_DISPLAY=${SANDBOX_DISPLAY:-wayland-forge}
 # Print PIDs of this sandbox's gnome-shell only: never the real session's shell, nor another
 # sandbox whose display name merely starts with the same text (wayland-forge vs wayland-forge2).

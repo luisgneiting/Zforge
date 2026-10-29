@@ -13,7 +13,7 @@ rules for common apps (JetBrains splashes, Conky, ddterm, GNOME setup dialogs, â
 
 You can also edit the file directly.
 
-## The file: `~/.config/forge/config/windows.json`
+## The file: `~/.config/zforge/config/windows.json`
 
 ```json
 {

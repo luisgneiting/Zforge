@@ -148,6 +148,29 @@ export class Settings extends withSignals() {
   }
 }
 
+// Holds no schemas: lookup() finds nothing unless a test stubs it
+export class SettingsSchemaSource {
+  static get_default() {
+    return new SettingsSchemaSource();
+  }
+
+  static new_from_directory(directory, parent, trusted) {
+    return new SettingsSchemaSource();
+  }
+
+  lookup(schemaId, recursive) {
+    return null;
+  }
+}
+
+export const FileType = {
+  UNKNOWN: 0,
+  REGULAR: 1,
+  DIRECTORY: 2,
+  SYMBOLIC_LINK: 3,
+  SPECIAL: 4,
+};
+
 export const FileCreateFlags = {
   NONE: 0,
   PRIVATE: 1 << 0,
@@ -172,6 +195,8 @@ export const FileCopyFlags = {
 export default {
   File,
   Settings,
+  SettingsSchemaSource,
+  FileType,
   FileCreateFlags,
   FileCopyFlags,
   FileQueryInfoFlags,

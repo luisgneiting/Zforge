@@ -1,7 +1,7 @@
 // Hold a real key chord with a virtual KEYBOARD in the sandbox (compositor generates repeats).
 //   __WIN__ (window id % 1000 to focus), __KEYS__ (keyval list, last one is held), __HOLD_MS__
 (() => {
-  const wm = Main.extensionManager.lookup("forge@jmmaranan.com").stateObj.extWm;
+  const wm = Main.extensionManager.lookup("zforge@luisgneiting.github.io").stateObj.extWm;
   const seat = global.stage.context.get_backend().get_default_seat();
   const kb = seat.create_virtual_device(1 /* CLUTTER_KEYBOARD_DEVICE */);
   const now = () => GLib.get_monotonic_time();

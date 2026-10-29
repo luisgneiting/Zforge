@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-    <schema id="org.gnome.shell.extensions.forge" path="/org/gnome/shell/extensions/forge/">
+    <schema id="org.gnome.shell.extensions.zforge" path="/org/gnome/shell/extensions/zforge/">
         <!-- Main Settings -->
         <key type="b" name="focus-border-toggle">
             <default>true</default>
@@ -261,8 +261,13 @@
             <summary>Whether to automatically sync changes to config files</summary>
         </key>
 
+        <key type="b" name="legacy-forge-imported">
+            <default>false</default>
+            <summary>Whether the settings and files of Forge were already imported</summary>
+        </key>
+
     </schema>
-    <schema id="org.gnome.shell.extensions.forge.keybindings" path="/org/gnome/shell/extensions/forge/keybindings/">
+    <schema id="org.gnome.shell.extensions.zforge.keybindings" path="/org/gnome/shell/extensions/zforge/keybindings/">
         <!-- Keybinding Settings -->
         <key type="as" name="focus-border-toggle">
             <default><![CDATA[['<Super>x']]]></default>

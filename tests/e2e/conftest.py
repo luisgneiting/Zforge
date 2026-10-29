@@ -148,7 +148,7 @@ def check_forge_ready(shell_proxy):
     js = """
     (function() {
         try {
-            const ext = Main.extensionManager.lookup('forge@jmmaranan.com');
+            const ext = Main.extensionManager.lookup('zforge@luisgneiting.github.io');
             return ext && ext.stateObj ? 'ready' : 'not_ready';
         } catch(e) { return 'error'; }
     })();
@@ -167,7 +167,7 @@ def _windows_json_safety_net(shell_proxy, check_forge_ready):
 
     Per-test cleanup (test_config_reload's finally; test_float_class_toggle's
     _strip_editor_float) is skipped if a test errors before its teardown registers,
-    leaking a probe or class-wide-float override into ~/.config/forge for the rest
+    leaking a probe or class-wide-float override into ~/.config/zforge for the rest
     of the session — and, on a local run, permanently. Snapshot windows.json once
     and restore it at session end so no test's override outlives the session,
     regardless of per-test outcome (forge-1wp). This is a safety net, NOT a
@@ -218,7 +218,7 @@ def enable_forge_debug_logging(shell_proxy, check_forge_ready):
     js = """
     (function() {
         try {
-            const ext = Main.extensionManager.lookup('forge@jmmaranan.com');
+            const ext = Main.extensionManager.lookup('zforge@luisgneiting.github.io');
             const settings = ext && ext.stateObj && ext.stateObj.settings;
             if (!settings) return 'no_settings';
             settings.set_boolean('logging-enabled', true);
