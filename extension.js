@@ -65,7 +65,7 @@ export default class ForgeExtension extends Extension {
     this._gnomeSettings = new Map();
     try {
       for (const desc of SETTINGS_OVERRIDES) {
-        // Skip overrides the user has opted out of (forge-9fo). A gated-off
+        // Skip overrides the user has opted out of. A gated-off
         // override is neither applied nor saved, so disable() has nothing to
         // restore for it — handled before any Gio.Settings construction.
         if (!shouldApplyOverride(desc, this.settings)) {
@@ -79,7 +79,7 @@ export default class ForgeExtension extends Extension {
       Logger.warn(`Failed to disable GNOME conflicting features: ${e}`);
     }
 
-    // forge-tus6: everything below can throw (config import does GSettings writes,
+    // Everything below can throw (config import does GSettings writes,
     // the managers build actors, patchCss touches the filesystem). GNOME Shell's
     // _callExtensionEnable catches a throw from enable(), marks the extension ERROR
     // and does NOT call disable() — so without this the overrides applied above stay
@@ -88,7 +88,7 @@ export default class ForgeExtension extends Extension {
     // Forge left to restore them. Tear down on the way out, then rethrow so the
     // Shell still reports the real failure.
     try {
-      // forge-abk: some overrides are gated on a runtime-toggleable Forge setting
+      // Some overrides are gated on a runtime-toggleable Forge setting
       // (edge-tiling on tiling-mode-enabled). Re-evaluate them when those settings
       // change so e.g. toggling Forge tiling off restores GNOME's native
       // edge-tiling, and toggling it back on re-applies the override.
@@ -142,10 +142,10 @@ export default class ForgeExtension extends Extension {
    * write the override value. Probes the schema/key first — constructing
    * Gio.Settings for an absent schema, or reading/writing an absent key, raises
    * a C-level g_error that TERMINATES gnome-shell and is NOT a catchable JS
-   * exception (forge-rj4x), so the probe is a crash guard, not optional. On a
+   * exception, so the probe is a crash guard, not optional. On a
    * normal GNOME 45-50 desktop every schema/key is present, so this is a no-op
    * guard. Re-captures `original` fresh on every call, so a runtime re-apply
-   * (forge-abk) records the user's latest GNOME value.
+   * records the user's latest GNOME value.
    */
   _applyOverride(desc) {
     if (!this._gnomeSettings || !this._savedSettings) return; // already disabled
@@ -175,7 +175,7 @@ export default class ForgeExtension extends Extension {
   /**
    * Restore one override to its saved original and drop it from _savedSettings
    * (so a later re-apply re-captures the current value). The cached Gio.Settings
-   * in _gnomeSettings is kept for possible re-apply (forge-abk).
+   * in _gnomeSettings is kept for possible re-apply.
    */
   _restoreOverride(desc) {
     if (!this._savedSettings) return; // already disabled
@@ -194,7 +194,7 @@ export default class ForgeExtension extends Extension {
   }
 
   /**
-   * forge-abk: when a gating Forge setting changes at runtime, apply or restore
+   * When a gating Forge setting changes at runtime, apply or restore
    * each override it gates. _applyOverride/_restoreOverride write GNOME (mutter)
    * gsettings, never Forge settings, so this cannot re-enter via the change
    * signal. Across a toggle-off → (user changes GNOME) → toggle-on cycle the
@@ -223,7 +223,7 @@ export default class ForgeExtension extends Extension {
       this._sessionId = null;
     }
 
-    // forge-abk: drop the runtime override-reconcile listeners BEFORE restoring,
+    // Drop the runtime override-reconcile listeners BEFORE restoring,
     // so a settings write during teardown can't re-enter the reconcile handler.
     if (this._overrideReconcileIds) {
       for (const id of this._overrideReconcileIds) {
@@ -264,13 +264,13 @@ export default class ForgeExtension extends Extension {
     this.configSync = null;
     this.settings = null;
     this.kbdSettings = null;
-    // forge-l2f7: clear Logger's module-level settings ref last (all Logger use
+    // Clear Logger's module-level settings ref last (all Logger use
     // above still needs it). Counterpart to Logger.init() in enable().
     Logger.destroy();
   }
 
   _onSessionModeChanged(session) {
-    // forge-aggo: check unlock-dialog FIRST. Real GNOME emits the lock screen as
+    // Check unlock-dialog FIRST. Real GNOME emits the lock screen as
     // {currentMode:"unlock-dialog", parentMode:"user"}, so a leading
     // `parentMode === "user"` test wins on lock and this teardown never runs —
     // leaving keybindings registered and the indicator visible on the lock screen.
