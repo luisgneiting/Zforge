@@ -4,7 +4,7 @@
   "gettext-domain": "zforge",
   "uuid": "zforge@luisgneiting.github.io",
   "settings-schema": "org.gnome.shell.extensions.zforge",
-  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "shell-version": ["45", "46", "47", "48", "49", "50", "51"],
   "session-modes": ["user", "unlock-dialog"],
   "url": "https://github.com/luisgneiting/Zforge"
 }
