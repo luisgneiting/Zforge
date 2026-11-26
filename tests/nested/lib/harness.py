@@ -108,10 +108,11 @@ def open_editor():
 def open_slow_app(delay_ms=150, x11=False, title="Slow app", **opts):
     """Open lib/slowapp.py, a test app that takes `delay_ms` to follow every new size (so on Wayland it
     takes its new place that long after Forge asks). `x11`: run it on the sandbox's Xwayland,
-    where the window moves at once and only its content lags. `opts`: --min-width etc."""
+    where the window moves at once and only its content lags. `opts`: --min-width etc. (True for a flag such as maximized)"""
     argv = [sys.executable, os.path.join(LIB, "slowapp.py"), "--delay-ms", str(delay_ms), "--title", title]
     for k, v in opts.items():
-        argv += [f"--{k.replace('_', '-')}", str(v)]
+        flag = f"--{k.replace('_', '-')}"
+        argv += [flag] if v is True else [] if v is False else [flag, str(v)]
     if x11:
         display = js('GLib.getenv("DISPLAY")')
         xauth = js('GLib.getenv("XAUTHORITY")')

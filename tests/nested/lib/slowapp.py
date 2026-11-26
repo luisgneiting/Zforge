@@ -7,7 +7,7 @@ every time, like a big terminal or editor on a busy machine. Real apps are only 
 (Ptyxis took up to a second while a resize key repeated on the 7680 px profile); this one is
 always slow, so a scenario can rely on it.
 
-    slowapp.py [--delay-ms 150] [--title T] [--color #rrggbb] [--min-width W] [--min-height H]
+    slowapp.py [--delay-ms 150] [--title T] [--color #rrggbb] [--min-width W] [--min-height H] [--maximized]
 
 Run it under X11 with GDK_BACKEND=x11 (and the sandbox's DISPLAY): X11 windows take their new
 place at once, and only their content lags.
@@ -28,6 +28,7 @@ def main():
     ap.add_argument("--color", default="#3b6ea5")
     ap.add_argument("--min-width", type=int, default=200)
     ap.add_argument("--min-height", type=int, default=150)
+    ap.add_argument("--maximized", action="store_true", help="open maximized, as apps that restore it do")
     args = ap.parse_args()
     GLib.set_prgname("forge-slowapp")          # WM_CLASS on X11
     rgb = [int(args.color[i:i + 2], 16) / 255 for i in (1, 3, 5)]
@@ -60,6 +61,8 @@ def main():
         area.set_draw_func(draw)
         win.set_child(area)
         win.connect("realize", lambda w: w.get_surface().connect("layout", layout))
+        if args.maximized:
+            win.maximize()
         win.present()
 
     app.connect("activate", activate)

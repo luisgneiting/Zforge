@@ -68,6 +68,34 @@ describe("WindowManager - Movement & Positioning", () => {
       wm().move(metaWindow, rect);
       expect(moveResizeSpy).toHaveBeenCalled();
     });
+
+    it("places a window created on a hidden workspace once it is shown", () => {
+      // It never gets first-frame, only "shown" when its workspace is
+      const metaWindow = createMockWindow();
+      const windowActor = metaWindow.get_compositor_private();
+      const actorDisconnect = vi.spyOn(windowActor, "disconnect");
+      vi.spyOn(windowActor, "connect").mockReturnValue(7);
+      let onShown;
+      vi.spyOn(metaWindow, "connect").mockImplementation((signal, callback) => {
+        if (signal === "shown") onShown = callback;
+        return 8;
+      });
+      const windowDisconnect = vi.spyOn(metaWindow, "disconnect");
+      const moveResizeSpy = vi.spyOn(metaWindow, "move_resize_frame");
+      const queueEventSpy = vi.spyOn(wm(), "queueEvent").mockImplementation(() => {});
+      const rect = { x: 100, y: 100, width: 800, height: 600 };
+
+      wm()._awaitFirstFrame(metaWindow);
+      wm().move(metaWindow, rect);
+      expect(moveResizeSpy).not.toHaveBeenCalled();
+
+      onShown();
+      expect(actorDisconnect).toHaveBeenCalledWith(7);
+      expect(windowDisconnect).toHaveBeenCalledWith(8);
+      expect(queueEventSpy).toHaveBeenCalledTimes(1);
+      wm().move(metaWindow, rect);
+      expect(moveResizeSpy).toHaveBeenCalled();
+    });
   });
 
   describe("move", () => {
