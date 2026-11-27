@@ -333,6 +333,29 @@ describe("ConfigManager", () => {
       const props = configManager.windowProps;
       expect(props).toEqual({ overrides: [] });
     });
+
+    // forge-ext/forge#415: the next change of the rules rewrites the file, so a
+    // broken one is kept next to it first; an empty one has nothing to keep
+    it.each([
+      ["broken", "{ not json", true],
+      ["empty", "  \n", false],
+    ])("keeps a %s windows.json as .bak: %s", (_kind, contents, kept) => {
+      const mockFile = createMockFile("/config/windows.json", { contents });
+      mockFile.copy = vi.fn(() => true);
+
+      Object.defineProperty(configManager, "windowConfigFile", {
+        get: () => mockFile,
+        configurable: true,
+      });
+
+      expect(configManager.windowProps.overrides).toBeDefined();
+      if (kept) {
+        expect(mockFile.copy).toHaveBeenCalledOnce();
+        expect(mockFile.copy.mock.calls[0][0].get_path()).toBe("/config/windows.json.bak");
+      } else {
+        expect(mockFile.copy).not.toHaveBeenCalled();
+      }
+    });
   });
 
   describe("windowProps setter", () => {
