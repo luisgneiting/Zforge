@@ -301,6 +301,23 @@ describe("Tree Layout Algorithms", () => {
       expect(container.decoration.height).toBe(totalBars);
     });
 
+    // forge-ext/forge#568: a row's natural height overflowed the list, so the
+    // rows below the first fell over the windows and couldn't be clicked
+    it("sizes each title row to its share of the list, less its margins", () => {
+      const params = { stackedHeight: 35 };
+      const styled = {
+        get_theme_node: () => ({ get_margin: (side) => (side === St.Side.TOP ? 1 : 2) }),
+      };
+      const unstyled = {
+        get_theme_node: () => {
+          throw new Error("not styled yet");
+        },
+      };
+      expect(ctx.tree._stackRowHeight(styled, params)).toBe(32);
+      expect(ctx.tree._stackRowHeight(unstyled, params)).toBe(33);
+      expect(ctx.tree._stackRowHeight(styled, { stackedHeight: 0 })).toBe(1);
+    });
+
     it("should respect container offset", () => {
       const container = new Node(NODE_TYPES.CON, new St.Bin());
       container.layout = LAYOUT_TYPES.STACKED;

@@ -1,72 +1,62 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import St from "gi://St";
 import { Node, NODE_TYPES, LAYOUT_TYPES } from "../../lib/extension/tree.js";
 import { createTreeFixture } from "../mocks/helpers/index.js";
 
 /**
- * forge-5qp1: Stacked layout — children fully overlap (no header offset) when
- * the tab decoration is disabled.
+ * forge-5qp1: a stacked container when the tab decoration is disabled.
  *
- * When `showtab-decoration-enabled` is OFF, processNode sets
- * params.stackedHeight = 0, so every stacked child receives the FULL container
- * rect (no vertical title-bar offset) and the decoration host is hidden. This
- * is intentional and consistent with TABBED mode (which also hides its bar when
- * the setting is off). Siblings can still be cycled by keyboard
- * (focus/swap next-prev, directional focus). This test pins the by-design
- * behavior so it cannot silently regress into a partial/garbage offset.
+ * With `showtab-decoration-enabled` OFF a stack has no title list, so every
+ * child used to get the full container rect and the windows behind the focused
+ * one could not be seen at all. Like Forge before the title list, and like
+ * forge-ext/forge#568, it now keeps the cascade: each window one header lower
+ * than the one before, so the top of each window shows. The decoration host
+ * stays hidden.
  */
-describe("forge-5qp1: stacked overlap when tab decoration disabled", () => {
+describe("forge-5qp1: stacked cascade when tab decoration disabled", () => {
   let ctx;
 
   beforeEach(() => {
     ctx = createTreeFixture({ fullExtWm: true });
     ctx.extWm.calculateGaps = () => 0;
+    vi.spyOn(ctx.tree, "hasTitleList").mockReturnValue(false);
+    vi.spyOn(ctx.tree, "stackedBarHeight").mockReturnValue(35);
   });
 
-  afterEach(() => ctx.cleanup());
+  afterEach(() => {
+    vi.restoreAllMocks();
+    ctx.cleanup();
+  });
 
-  it("gives every stacked child the full container rect when stackedHeight is 0", () => {
+  function stack(n) {
     const container = new Node(NODE_TYPES.CON, new St.Bin());
     container.layout = LAYOUT_TYPES.STACKED;
     container.rect = { x: 0, y: 0, width: 1000, height: 800 };
+    container.childNodes = Array.from({ length: n }, () => new Node(NODE_TYPES.CON, new St.Bin()));
+    const params = { stackedHeight: 0, tiledChildren: container.childNodes };
+    container.childNodes.forEach((child, i) =>
+      ctx.tree.processStacked(container, child, params, i)
+    );
+    return container;
+  }
 
-    const child1 = new Node(NODE_TYPES.CON, new St.Bin());
-    const child2 = new Node(NODE_TYPES.CON, new St.Bin());
-    const child3 = new Node(NODE_TYPES.CON, new St.Bin());
-    container.childNodes = [child1, child2, child3];
-
-    // stackedHeight 0 mirrors showtab-decoration-enabled = false.
-    const params = { stackedHeight: 0, tiledChildren: [child1, child2, child3] };
-
-    ctx.tree.processStacked(container, child1, params, 0);
-    ctx.tree.processStacked(container, child2, params, 1);
-    ctx.tree.processStacked(container, child3, params, 2);
-
-    // No header offset: each child fully overlaps the whole container.
-    [child1, child2, child3].forEach((child) => {
+  it("places each child one header lower than the one before", () => {
+    const container = stack(3);
+    container.childNodes.forEach((child, i) => {
       expect(child.rect.x).toBe(0);
-      expect(child.rect.y).toBe(0);
+      expect(child.rect.y).toBe(35 * i);
       expect(child.rect.width).toBe(1000);
-      expect(child.rect.height).toBe(800);
+      expect(child.rect.height).toBe(800 - 35 * i);
     });
   });
 
-  it("hides the decoration host when stackedHeight is 0", () => {
-    const container = new Node(NODE_TYPES.CON, new St.Bin());
-    container.layout = LAYOUT_TYPES.STACKED;
-    container.rect = { x: 0, y: 0, width: 1000, height: 800 };
+  it("gives a lone child the full container rect", () => {
+    const [child] = stack(1).childNodes;
+    expect(child.rect).toEqual({ x: 0, y: 0, width: 1000, height: 800 });
+  });
 
-    const child = new Node(NODE_TYPES.CON, new St.Bin());
-    const sibling = new Node(NODE_TYPES.CON, new St.Bin());
-    container.childNodes = [child, sibling];
-
-    ctx.tree.processStacked(
-      container,
-      child,
-      { stackedHeight: 0, tiledChildren: [child, sibling] },
-      0
-    );
-
-    expect(container.decoration.visible).toBe(false);
+  it("hides the decoration host", () => {
+    const container = stack(2);
+    expect(container.decoration?.visible ?? false).toBe(false);
   });
 });

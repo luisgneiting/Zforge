@@ -55,23 +55,37 @@ describe("forge-d5mm: focus handler re-stacks the focused window", () => {
     expect(tabbedSpy).toHaveBeenCalledWith(node);
   });
 
-  it("re-appends the focused window to the end of its STACKED container", () => {
+  // forge-ext/forge#568: a stack with a title list keeps its order (its rows
+  // show every window) and only raises the focused one; without title bars the
+  // old cascade moves the focused window to the end
+  it.each([
+    [true, "keeps the stack's order and raises the focused window"],
+    [false, "re-appends the focused window to the end of its STACKED container"],
+  ])("title bars %s: %s", (showTabs) => {
     const winA = createMockWindow({ wm_class: "A", workspace: ctx.workspaces[0] });
     const winB = createMockWindow({ wm_class: "B", workspace: ctx.workspaces[0] });
     const winC = createMockWindow({ wm_class: "C", workspace: ctx.workspaces[0] });
     wm().trackWindow(null, winA);
     wm().trackWindow(null, winB);
     wm().trackWindow(null, winC);
+    vi.spyOn(wm().tree, "hasTitleList").mockReturnValue(showTabs);
 
     const { monitor } = getWorkspaceAndMonitor(ctx, 0, 0);
     monitor.layout = LAYOUT_TYPES.STACKED;
     const nodeA = wm().tree.findNode(winA);
     expect(nodeA.parentNode).toBe(monitor);
+    const before = [...monitor.childNodes];
     expect(monitor.lastChild).not.toBe(nodeA); // A starts above the stack
+    const raise = vi.spyOn(winA, "raise");
 
-    // Focus A (the bottom-most, index 0): it should be raised to the stack end.
+    // Focus A (the bottom-most, index 0)
     fireFocusAndGetUpdate(winA)();
 
-    expect(monitor.lastChild).toBe(nodeA);
+    if (showTabs) {
+      expect(monitor.childNodes).toEqual(before);
+    } else {
+      expect(monitor.lastChild).toBe(nodeA);
+    }
+    expect(raise).toHaveBeenCalled();
   });
 });
