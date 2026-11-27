@@ -853,7 +853,7 @@ describe("WindowManager - Floating Mode", () => {
         expect(configMgr().windowProps.overrides.length).toBe(1);
       });
 
-      it("should remove all matching overrides without wmId filter", () => {
+      it("without wmId filter, removes the app's rule and this window's own only", () => {
         configMgr().windowProps.overrides = [
           { wmClass: "TestApp", mode: "float" },
           { wmClass: "TestApp", wmId: 123, mode: "float" },
@@ -864,8 +864,9 @@ describe("WindowManager - Floating Mode", () => {
 
         wm().removeFloatOverride(metaWindow, false);
 
+        // the rule Super+C made for the app's other window stays (forge-ext/forge#534)
         const overrides = configMgr().windowProps.overrides;
-        expect(overrides.length).toBe(0);
+        expect(overrides).toEqual([{ wmClass: "TestApp", wmId: 456, mode: "float" }]);
       });
 
       it("should only remove matching wmId when wmId filter enabled", () => {

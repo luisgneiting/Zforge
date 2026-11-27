@@ -281,6 +281,28 @@ describe("Bug #172: Per-window float toggle", () => {
       expect(overrides.some((o) => o.wmId === 1002)).toBe(false);
       expect(overrides.some((o) => o.wmId === 1003)).toBe(true);
     });
+
+    // forge-ext/forge#534: turning "always float" off on one window
+    // tiled the app's other window that Super+C had floated
+    it("class-wide remove keeps the rules made for the app's other windows", () => {
+      ctx.configMgr.windowProps.overrides = [
+        { wmClass: "gnome-terminal-server", wmId: 1001, mode: "float" },
+        { wmClass: "gnome-terminal-server", mode: "float" },
+        { wmClass: "gnome-terminal-server", wmId: 1002, mode: "float" },
+      ];
+
+      const terminal = createMockWindow({
+        wm_class: "gnome-terminal-server",
+        id: 1002,
+        title: "Terminal",
+        allows_resize: true,
+      });
+
+      ctx.windowManager.removeFloatOverride(terminal, false);
+
+      const overrides = ctx.configMgr.windowProps.overrides;
+      expect(overrides).toEqual([{ wmClass: "gnome-terminal-server", wmId: 1001, mode: "float" }]);
+    });
   });
 
   describe("isFloatingExempt per-window matching", () => {
