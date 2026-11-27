@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ConfigManager } from "../../lib/shared/settings.js";
 import { ConfigSync } from "../../lib/shared/config-sync.js";
 import { File } from "../mocks/gnome/Gio.js";
+import { routeFileWrites } from "../mocks/helpers/index.js";
 
 /**
  * Bug forge-1n2v (audit-2026-07 / C21) + forge-q9e5 (C23): _saveJsonConfig returned
@@ -26,6 +27,7 @@ describe("Bug forge-1n2v/forge-q9e5: save/export/import report real success", ()
       const f = new File("/mock/settings.json");
       f.get_parent = () => ({ get_path: () => "/mock" });
       f.replace_contents = replace;
+      routeFileWrites(f);
       return f;
     }
 

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ThemeManagerBase } from "../../../lib/shared/theme.js";
 import { Logger } from "../../../lib/shared/logger.js";
 import { File, Settings } from "../../mocks/gnome/Gio.js";
+import { routeFileWrites } from "../../mocks/helpers/index.js";
 
 // Sample CSS for testing
 const sampleCss = `
@@ -45,6 +46,7 @@ function createMockConfigMgr(cssContent = sampleCss) {
   const mockFile = new File("/mock/stylesheet.css");
   mockFile.load_contents = vi.fn(() => [true, new TextEncoder().encode(cssContent), null]);
   mockFile.replace_contents = vi.fn(() => [true, null]);
+  routeFileWrites(mockFile);
   mockFile.copy = vi.fn(() => true);
   mockFile.get_parent = vi.fn(() => ({
     get_path: () => "/mock",
@@ -382,6 +384,7 @@ describe("Bug #312 (forge-9sd) - read-only stylesheet persistence", () => {
     file.load_contents = vi.fn(() => [true, new TextEncoder().encode(cssContent), null]);
     vi.spyOn(file, "replace_contents");
     vi.spyOn(file, "set_attribute_uint32");
+    routeFileWrites(file);
     return {
       file,
       configMgr: {
@@ -443,6 +446,7 @@ describe("Bug #312 (forge-9sd) - read-only stylesheet persistence", () => {
     dest._writable = false;
     dest.load_contents = vi.fn(() => [true, new TextEncoder().encode(sampleCss), null]);
     vi.spyOn(dest, "replace_contents");
+    routeFileWrites(dest);
 
     const configMgr = {
       stylesheetFile: dest,
@@ -543,6 +547,7 @@ describe("ThemeManagerBase._completeUserCss", () => {
     file.load_contents = vi.fn(() => [true, new TextEncoder().encode(css), null]);
     file.replace_contents = vi.fn(() => [true, null]);
     file.copy = vi.fn(() => true);
+    routeFileWrites(file);
     return file;
   };
   const saved = (file) => new TextDecoder().decode(file.replace_contents.mock.calls[0][0]);
@@ -562,6 +567,7 @@ describe("ThemeManagerBase._completeUserCss", () => {
       configMgr: createMockConfigMgr(".tiled { color: rgba(1, 2, 3, 1); }"),
       settings: createMockSettings(),
     }).cssAst;
+    routeFileWrites(file); // after the second manager routed its own file
 
     themeManager._completeUserCss(file);
 

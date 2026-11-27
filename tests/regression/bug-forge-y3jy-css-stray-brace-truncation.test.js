@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { parse } from "../../lib/css/index.js";
 import { ThemeManagerBase } from "../../lib/shared/theme.js";
 import { File, Settings } from "../mocks/gnome/Gio.js";
+import { routeFileWrites } from "../mocks/helpers/index.js";
 
 /**
  * Bug forge-y3jy (audit-2026-07b): rules() stops at an unmatched top-level '}'
@@ -42,6 +43,7 @@ describe("Bug forge-y3jy: a stray '}' truncates the stylesheet and the write des
     file.load_contents = vi.fn(() => [true, new TextEncoder().encode(css), null]);
     file.get_parent = () => ({ get_path: () => "/mock" });
     file.replace_contents = vi.fn(() => [true, null]);
+    routeFileWrites(file);
 
     const settings = new Settings();
     settings.set_uint("css-last-update", 0);

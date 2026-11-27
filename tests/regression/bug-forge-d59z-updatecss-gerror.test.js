@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { ThemeManagerBase } from "../../lib/shared/theme.js";
 import { File, Settings } from "../mocks/gnome/Gio.js";
+import { routeFileWrites } from "../mocks/helpers/index.js";
 
 /**
  * Bug forge-d59z (audit-2026-07 / C20): _updateCss() relied on replace_contents
@@ -25,6 +26,7 @@ describe("Bug forge-d59z: _updateCss swallows a replace_contents GError", () => 
           throw new Error("GLib.Error g-io-error-quark: Permission denied");
         })
       : vi.fn(() => [true, null]);
+    routeFileWrites(file);
 
     const settings = new Settings();
     settings.set_uint("css-last-update", 0);

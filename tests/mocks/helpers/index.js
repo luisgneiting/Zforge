@@ -24,3 +24,6 @@ export * from "./testFixtures.js";
 
 // Tree navigation and creation helpers
 export * from "./treeHelpers.js";
+
+// Routing config file saves (GLib.file_set_contents) to mock files
+export * from "./fileWrites.js";

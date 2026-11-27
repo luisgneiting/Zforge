@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ConfigManager } from "../../../lib/shared/settings.js";
 import { File } from "../../mocks/gnome/Gio.js";
+import { routeFileWrites } from "../../mocks/helpers/index.js";
 
 // Sample window config for testing
 const sampleWindowConfig = {
@@ -33,6 +34,7 @@ function createMockFile(path, options = {}) {
   }
 
   file.replace_contents = vi.fn(() => [true, null]);
+  routeFileWrites(file);
   file.make_directory_with_parents = vi.fn(() => true);
   file.create = vi.fn(() => ({
     write_all: vi.fn(() => [true, 0]),

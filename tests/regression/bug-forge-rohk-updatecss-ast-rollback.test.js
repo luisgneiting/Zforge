@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { ThemeManagerBase } from "../../lib/shared/theme.js";
 import { File, Settings } from "../mocks/gnome/Gio.js";
+import { routeFileWrites } from "../mocks/helpers/index.js";
 
 /**
  * Bug forge-rohk (audit-2026-07b): setCssProperty assigned cssProperty.value
@@ -26,6 +27,7 @@ describe("Bug forge-rohk: a failed write leaves the AST dirty and the retry no-o
       if (failing) throw new Error("GLib.Error g-io-error-quark: Permission denied");
       return [true, null];
     });
+    routeFileWrites(file);
 
     const settings = new Settings();
     settings.set_uint("css-last-update", 0);
