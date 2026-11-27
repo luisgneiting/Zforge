@@ -1,6 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { NODE_TYPES, LAYOUT_TYPES } from "../../lib/extension/tree.js";
-import { createTreeFixture, getWorkspaceAndMonitor } from "../mocks/helpers/index.js";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import GLib from "gi://GLib";
+import { NODE_TYPES, LAYOUT_TYPES, Tree } from "../../lib/extension/tree.js";
+import { WindowManager } from "../../lib/extension/window.js";
+import {
+  createTreeFixture,
+  createWindowManagerFixture,
+  getWorkspaceAndMonitor,
+} from "../mocks/helpers/index.js";
 import { createMockWindow } from "../mocks/helpers/mockWindow.js";
 import { Rectangle } from "../mocks/gnome/Meta.js";
 import { Bin } from "../mocks/gnome/St.js";
@@ -99,5 +105,51 @@ describe("the layout survives turning Forge off and on", () => {
 
     expect(monitor.childNodes.map(fmt).join(",")).toBe("9100@0.6,9101@0.4");
     expect(ctx.tree.getNodeByLayout(LAYOUT_TYPES.TABBED)).toHaveLength(0);
+  });
+});
+
+/**
+ * GNOME turns off the extensions after one it disables and back on, once for
+ * each, so Forge was disabled again before its enable had rebuilt the tree
+ * (several times in a row when the screen locked). That empty tree was saved
+ * over the layout, and after unlocking every window was side by side.
+ */
+describe("the layout survives being turned off again before it was rebuilt", () => {
+  let ctx;
+
+  beforeEach(() => {
+    ctx = createWindowManagerFixture();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    ctx.cleanup();
+  });
+
+  it("keeps the layout saved by the disable before", () => {
+    const saved = { mo0ws0: { layout: LAYOUT_TYPES.HSPLIT, children: [] } };
+    const snapshot = vi.spyOn(Tree.prototype, "snapshotFullLayout");
+    snapshot.mockReturnValueOnce(saved);
+    const restore = vi.spyOn(Tree.prototype, "restoreFullLayout").mockImplementation(() => {});
+    // The mock settings and display have no signals to bind
+    vi.spyOn(WindowManager.prototype, "_bindSignals").mockImplementation(() => {});
+
+    // Rebuilt, then turned off: the layout is saved
+    const first = ctx.windowManager;
+    first.enable();
+    first.disable();
+
+    // Turned on and off again before the tree was rebuilt
+    const idle = vi.spyOn(GLib, "idle_add").mockReturnValue(1);
+    const second = new WindowManager(ctx.extension);
+    second.enable();
+    second.disable();
+    idle.mockRestore();
+
+    // Turned on for good: the layout from the first disable is put back
+    const third = new WindowManager(ctx.extension);
+    third.enable();
+    expect(restore).toHaveBeenLastCalledWith(saved);
+    third.disable();
   });
 });
