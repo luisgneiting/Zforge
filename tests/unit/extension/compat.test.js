@@ -72,11 +72,37 @@ describe("compat (Mutter 49+ branch)", () => {
 
   describe("unmaximize", () => {
     it("calls set_unmaximize_flags(BOTH) then unmaximize() with no args", () => {
-      const w = { set_unmaximize_flags: vi.fn(), unmaximize: vi.fn() };
+      const w = {
+        get_maximize_flags: vi.fn(() => MaximizeFlags.BOTH),
+        set_unmaximize_flags: vi.fn(),
+        unmaximize: vi.fn(),
+      };
       Compat.unmaximize(w);
       expect(w.set_unmaximize_flags).toHaveBeenCalledWith(MaximizeFlags.BOTH);
       expect(w.unmaximize).toHaveBeenCalledOnce();
       expect(w.unmaximize).toHaveBeenCalledWith();
+    });
+
+    it("unmaximizes a window maximized on one axis only", () => {
+      const w = {
+        get_maximize_flags: vi.fn(() => MaximizeFlags.VERTICAL),
+        set_unmaximize_flags: vi.fn(),
+        unmaximize: vi.fn(),
+      };
+      Compat.unmaximize(w);
+      expect(w.unmaximize).toHaveBeenCalledOnce();
+    });
+
+    // forge-ext/forge#592: Mutter 51 crashed in set_unmaximize_flags() on a closing window
+    it("leaves a window that isn't maximized alone", () => {
+      const w = {
+        get_maximize_flags: vi.fn(() => 0),
+        set_unmaximize_flags: vi.fn(),
+        unmaximize: vi.fn(),
+      };
+      Compat.unmaximize(w);
+      expect(w.set_unmaximize_flags).not.toHaveBeenCalled();
+      expect(w.unmaximize).not.toHaveBeenCalled();
     });
   });
 
@@ -178,11 +204,21 @@ describe("compat (Mutter 48 branch)", () => {
 
   describe("unmaximize", () => {
     it("calls unmaximize(BOTH) once and does not touch set_unmaximize_flags", () => {
-      const w = { unmaximize: vi.fn(), set_unmaximize_flags: vi.fn() };
+      const w = {
+        get_maximized: vi.fn(() => MaximizeFlags.BOTH),
+        unmaximize: vi.fn(),
+        set_unmaximize_flags: vi.fn(),
+      };
       Compat.unmaximize(w);
       expect(w.unmaximize).toHaveBeenCalledOnce();
       expect(w.unmaximize).toHaveBeenCalledWith(MaximizeFlags.BOTH);
       expect(w.set_unmaximize_flags).not.toHaveBeenCalled();
+    });
+
+    it("leaves a window that isn't maximized alone", () => {
+      const w = { get_maximized: vi.fn(() => 0), unmaximize: vi.fn() };
+      Compat.unmaximize(w);
+      expect(w.unmaximize).not.toHaveBeenCalled();
     });
   });
 

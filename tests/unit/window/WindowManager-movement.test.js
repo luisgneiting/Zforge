@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { WINDOW_MODES } from "../../../lib/extension/window.js";
 import { NODE_TYPES, LAYOUT_TYPES } from "../../../lib/extension/tree.js";
+import { MaximizeFlags } from "../../mocks/gnome/Meta.js";
 import {
   createMockWindow,
   createWindowManagerFixture,
@@ -119,12 +120,27 @@ describe("WindowManager - Movement & Positioning", () => {
 
     it("should unmaximize window before moving", () => {
       const metaWindow = createMockWindow();
+      metaWindow.set_maximize_flags(MaximizeFlags.BOTH);
+      metaWindow.maximize();
       const unmaximizeSpy = vi.spyOn(metaWindow, "unmaximize");
       const rect = { x: 100, y: 100, width: 800, height: 600 };
 
       wm().move(metaWindow, rect);
 
       expect(unmaximizeSpy).toHaveBeenCalled();
+    });
+
+    // forge-ext/forge#592: Mutter 51 crashed unmaximizing a window being closed
+    it("doesn't unmaximize a window that isn't maximized", () => {
+      const metaWindow = createMockWindow();
+      const unmaximizeSpy = vi.spyOn(metaWindow, "unmaximize");
+      const flagsSpy = vi.spyOn(metaWindow, "set_unmaximize_flags");
+      const rect = { x: 100, y: 100, width: 800, height: 600 };
+
+      wm().move(metaWindow, rect);
+
+      expect(unmaximizeSpy).not.toHaveBeenCalled();
+      expect(flagsSpy).not.toHaveBeenCalled();
     });
 
     it("should remove transitions from window actor", () => {
