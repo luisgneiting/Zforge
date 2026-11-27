@@ -534,3 +534,84 @@ describe("ThemeManagerBase edge cases", () => {
     expect(() => new ThemeManagerBase({ configMgr, settings })).not.toThrow();
   });
 });
+
+// forge-ext/forge#583: a user stylesheet that lacks rules or properties is
+// completed from the default one, and the user's file is kept as .bak
+describe("ThemeManagerBase._completeUserCss", () => {
+  const userFile = (css) => {
+    const file = new File("/home/u/.config/zforge/stylesheet/forge/stylesheet.css");
+    file.load_contents = vi.fn(() => [true, new TextEncoder().encode(css), null]);
+    file.replace_contents = vi.fn(() => [true, null]);
+    file.copy = vi.fn(() => true);
+    return file;
+  };
+  const saved = (file) => new TextDecoder().decode(file.replace_contents.mock.calls[0][0]);
+
+  let themeManager;
+  beforeEach(() => {
+    themeManager = new ThemeManagerBase({
+      configMgr: createMockConfigMgr(),
+      settings: createMockSettings(),
+    });
+  });
+
+  it("adds the missing rules and properties and keeps the user's values", () => {
+    const file = userFile(".tiled { color: rgba(1, 2, 3, 1); }");
+    // What _importCss() parsed from the user's file
+    themeManager.cssAst = new ThemeManagerBase({
+      configMgr: createMockConfigMgr(".tiled { color: rgba(1, 2, 3, 1); }"),
+      settings: createMockSettings(),
+    }).cssAst;
+
+    themeManager._completeUserCss(file);
+
+    expect(themeManager.getCssProperty(".tiled", "color").value).toBe("rgba(1, 2, 3, 1)");
+    expect(themeManager.getCssProperty(".tiled", "border-width").value).toBe("3px");
+    expect(themeManager.getCssProperty(".tabbed", "color").value).toBe("rgba(50, 50, 50, 0.4)");
+    expect(file.copy.mock.calls[0][0].get_path()).toBe(`${file.get_path()}.bak`);
+    expect(saved(file)).toContain(".tabbed");
+  });
+
+  it("replaces a stylesheet that can't be parsed by the default one", () => {
+    const file = userFile(".tiled { color: red; } }");
+    themeManager.cssAst = { stylesheet: { rules: [], parsingErrors: ["missing '{'"] } };
+
+    themeManager._completeUserCss(file);
+
+    expect(themeManager.cssAst.stylesheet.parsingErrors).toHaveLength(0);
+    expect(themeManager.getCssProperty(".tiled", "color").value).toBe("rgba(255, 255, 255, 0.8)");
+    expect(file.copy).toHaveBeenCalledOnce();
+  });
+
+  it("leaves a complete stylesheet alone", () => {
+    const file = userFile("");
+    themeManager._completeUserCss(file);
+    expect(file.copy).not.toHaveBeenCalled();
+    expect(file.replace_contents).not.toHaveBeenCalled();
+  });
+});
+
+// forge-ext/forge#584: a read-only stylesheet or backup left by an earlier
+// version is replaced instead of failing the update
+describe("ThemeManagerBase._copyFile", () => {
+  it("replaces a read-only target", () => {
+    const themeManager = new ThemeManagerBase({
+      configMgr: createMockConfigMgr(),
+      settings: createMockSettings(),
+    });
+    const source = new File("/ext/stylesheet.css");
+    const target = new File("/home/u/stylesheet.css");
+    const denied = Object.assign(new Error("Permission denied"), { matches: () => true });
+    source.copy = vi.fn().mockImplementationOnce(() => {
+      throw denied;
+    });
+    source.copy.mockReturnValue(true);
+    target.query_exists = vi.fn(() => true);
+    target.query_info = vi.fn(() => ({ get_attribute_boolean: () => false }));
+    target.delete = vi.fn(() => true);
+
+    expect(themeManager._copyFile(source, target)).toBe(true);
+    expect(target.delete).toHaveBeenCalledOnce();
+    expect(source.copy).toHaveBeenCalledTimes(2);
+  });
+});

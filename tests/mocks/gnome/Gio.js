@@ -192,6 +192,12 @@ export const FileCopyFlags = {
   TARGET_DEFAULT_PERMS: 1 << 5,
 };
 
+export const IOErrorEnum = {
+  NOT_FOUND: 1,
+  EXISTS: 2,
+  PERMISSION_DENIED: 14,
+};
+
 export default {
   File,
   Settings,
@@ -200,4 +206,5 @@ export default {
   FileCreateFlags,
   FileCopyFlags,
   FileQueryInfoFlags,
+  IOErrorEnum,
 };
