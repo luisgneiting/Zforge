@@ -253,3 +253,29 @@ describe("compat getMinFrameSize", () => {
     expect(Compat.getMinFrameSize(win)).toBe(null);
   });
 });
+
+describe("getDefaultSeat", () => {
+  let Compat;
+  let savedStage;
+  beforeEach(async () => {
+    Compat = await loadCompat("51.1");
+    savedStage = global.stage;
+  });
+  afterEach(() => {
+    global.stage = savedStage;
+  });
+
+  // forge-ext/forge#593: GNOME 51 has no Clutter.get_default_backend()
+  it("takes the seat from the stage's context", () => {
+    const seat = { warp_pointer: vi.fn() };
+    global.stage = { context: { get_backend: () => ({ get_default_seat: () => seat }) } };
+    expect(Compat.getDefaultSeat()).toBe(seat);
+  });
+
+  it("falls back to Clutter.get_default_backend() without a stage context", async () => {
+    // The Clutter compat.js was loaded with (loadCompat resets the modules)
+    const Clutter = (await import("gi://Clutter")).default;
+    global.stage = {};
+    expect(Compat.getDefaultSeat()).toBe(Clutter.get_default_backend().get_default_seat());
+  });
+});
