@@ -146,6 +146,34 @@ describe("Tree Operations", () => {
       expect(node.parentNode.layout).toBe(LAYOUT_TYPES.VSPLIT);
     });
 
+    // forge-ext/forge#589: split() put a NEW node for the window in the
+    // container; the old one, still referenced (a drag target...), could come
+    // back as a second node of the same window, and the window lost its mode
+    it("moves the window's own node into the container, keeping its mode", () => {
+      const { monitor } = getWorkspaceAndMonitor(ctx);
+      const window = createMockWindow();
+      const node = ctx.tree.createNode(monitor.nodeValue, NODE_TYPES.WINDOW, window);
+      node.mode = WINDOW_MODES.GRAB_TILE;
+
+      const con = ctx.tree.split(node, ORIENTATION_TYPES.HORIZONTAL, true);
+
+      expect(con.childNodes).toEqual([node]);
+      expect(node.mode).toBe(WINDOW_MODES.GRAB_TILE);
+      expect(
+        ctx.tree.getNodeByType(NODE_TYPES.WINDOW).filter((n) => n.nodeValue === window)
+      ).toEqual([node]);
+    });
+
+    it("does nothing for a node that is no longer in its parent", () => {
+      const { monitor } = getWorkspaceAndMonitor(ctx);
+      const node = ctx.tree.createNode(monitor.nodeValue, NODE_TYPES.WINDOW, createMockWindow());
+      ctx.tree.createNode(monitor.nodeValue, NODE_TYPES.WINDOW, createMockWindow());
+      monitor.childNodes.splice(monitor.childNodes.indexOf(node), 1); // detached, parentNode kept
+
+      expect(ctx.tree.split(node, ORIENTATION_TYPES.HORIZONTAL, true)).toBe(null);
+      expect(monitor.childNodes.every((c) => c.isWindow())).toBe(true);
+    });
+
     it("should toggle split direction if single child", () => {
       const { monitor } = getWorkspaceAndMonitor(ctx);
       const container = ctx.tree.createNode(monitor.nodeValue, NODE_TYPES.CON, new Bin());

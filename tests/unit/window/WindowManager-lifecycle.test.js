@@ -299,6 +299,24 @@ describe("WindowManager - Window Lifecycle", () => {
     });
   });
 
+  // forge-ext/forge#589: a burst of focus changes queued hundreds of
+  // identical events, replayed for minutes afterwards
+  describe("queueEvent coalescing", () => {
+    it("keeps one waiting coalescing event per name, and every other event", () => {
+      const queued = () => wm().eventQueue._elements.map((e) => e.name);
+      const before = queued().length;
+      for (let i = 0; i < 5; i++) {
+        wm().queueEvent({ name: "focus-update", coalesce: true, callback: () => {} });
+        wm().queueEvent({ name: "raise-float", coalesce: true, callback: () => {} });
+        wm().queueEvent({ name: "window-destroy", callback: () => {} });
+      }
+      const added = queued().slice(before);
+      expect(added.filter((n) => n === "focus-update")).toHaveLength(1);
+      expect(added.filter((n) => n === "raise-float")).toHaveLength(1);
+      expect(added.filter((n) => n === "window-destroy")).toHaveLength(5);
+    });
+  });
+
   describe("Window Lifecycle Integration", () => {
     it("should track and then destroy window", () => {
       const metaWindow = createMockWindow({ title: "Test Window" });
