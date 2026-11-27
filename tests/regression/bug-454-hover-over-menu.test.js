@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { createMockWindow, createWindowManagerFixture } from "../mocks/helpers/index.js";
 import { Rectangle, WindowType } from "../mocks/gnome/Meta.js";
 
@@ -35,5 +35,25 @@ describe("Bug #454: focus on hover leaves open menus alone", () => {
     global.get_window_actors.mockReturnValue([{ meta_window: app }]);
 
     expect(ctx.windowManager._getMetaWindowAtPointer(POINTER)).toBe(app);
+  });
+
+  // forge-ext/forge#595: a click-through overlay (Gromit-MPX's full-screen
+  // override-redirect window) let the pointer through, but still hid the
+  // window under it, so focus on hover stopped while it existed
+  it("looks through an overlay that lets the pointer through", () => {
+    const app = createMockWindow({ id: 1, rect: covering(), workspace: ctx.workspaces[0] });
+    const overlay = createMockWindow({ id: 2, rect: covering(), workspace: ctx.workspaces[0] });
+    overlay.is_override_redirect = () => true;
+    const actors = [app, overlay].map((meta_window) => ({ meta_window }));
+    global.get_window_actors.mockReturnValue(actors);
+    const takesPointer = vi.spyOn(ctx.windowManager, "_takesPointer");
+
+    takesPointer.mockReturnValue(false);
+    expect(ctx.windowManager._getMetaWindowAtPointer(POINTER)).toBe(app);
+    expect(takesPointer).toHaveBeenCalledWith(actors[1], ...POINTER);
+
+    // A menu takes the pointer: keep the current focus
+    takesPointer.mockReturnValue(true);
+    expect(ctx.windowManager._getMetaWindowAtPointer(POINTER)).toBe(null);
   });
 });

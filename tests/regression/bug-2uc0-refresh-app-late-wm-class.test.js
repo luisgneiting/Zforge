@@ -52,4 +52,27 @@ describe("Bug forge-2uc0: Node.refreshApp rebuilds app + tab when wm_class lands
     expect(nodeWindow.app).toBe(app);
     expect(nodeWindow.tab).toBeTruthy();
   });
+
+  // forge-ext/forge#591: the tracker first gives a window-backed fallback app,
+  // then the real one; the tab kept the fallback's generic icon
+  it("shows the real app's icon once it resolves after the tab was made", () => {
+    const icon = (name) => ({ name });
+    const fallback = { get_name: () => "Fallback", create_icon_texture: () => icon("generic") };
+    const real = { get_name: () => "Real", create_icon_texture: () => icon("real") };
+    const spy = vi.spyOn(Shell.WindowTracker.prototype, "get_window_app").mockReturnValue(fallback);
+
+    const { monitor } = getWorkspaceAndMonitor(ctx);
+    const { nodeWindow } = createWindowNode(ctx.tree, monitor);
+    nodeWindow.refreshApp();
+    const iconBin = nodeWindow.tab.get_child_at_index(0);
+    expect(iconBin.child.name).toBe("generic");
+
+    nodeWindow.render();
+    expect(iconBin.child.name).toBe("generic"); // same app: left alone
+
+    spy.mockReturnValue(real);
+    nodeWindow.render();
+    expect(nodeWindow.app).toBe(real);
+    expect(iconBin.child.name).toBe("real");
+  });
 });
